@@ -1,92 +1,85 @@
-import React from 'react';
+import { CardTravelSharp } from '@material-ui/icons';
+import React, { Component } from 'react';
+import Card from '@material-ui/core/Card';
 import Icon from '@material-ui/core/Icon';
 import TextareaAutosize from 'react-textarea-autosize';
-import Card from '@material-ui/core/Card';
-import { NoEncryption } from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
-class TrelloActionButton extends React.Component {
+import { connect } from 'react-redux';
+import { addList } from '../actions';
 
-        state = {
+const styles = {
+    openFormButtonGroup:{
+        display: 'flex',
+        alignItem: 'center',
+        curser: 'pointer',
+        borderRadius: 2,
+        height: 36,
+        width: 272,
+        paddingLeft:10
+    },
+    formButtonGroup: {
+        marginTop: 8,
+        display:'flex',
+        alignItem: 'center'
+    }
+}
+class TrelloActionButton extends Component {
+        state ={
             formOpen : false
-        }
-    renderAddButton = () =>{
-        const {List} = this.props;
-        const buttonText = List ? "Add another list": "Add another card";
-        const buttonTextOpacity = List? 1 : 0.5;
-        const buttonTextColor = List? "white": "inherit";
-        const buttonTextBackground= List? "rgba(0, 0, 0, 1.5)": "inherit";
-    return (
-        
-        <div onclick = {this.openForm} style= {{...styles.openForButtonGroup,
-             opacity: buttonTextOpacity,
-            color: buttonTextColor,
-            backgroundColor: buttonTextBackground,
-        }}>
-            <Icon>add</Icon>
-            <p>{buttonText}</p>
-        </div>
-    
-    )
+        };
+    openForm =()=>{
+            this.setState({
+                formOpen: true
+            })
     }
+    renderForm =() => {
+        const {list } = this.props
+        const placeholder = list ? "Enter the list" : "Enter the title for card"
+        const buttonText = list ? "Add list": "Add Card"
+        return(
+            <div>
+                <Card style={{
+                    minHeight: 85,
+                    minWidth: 185,
+                    padding: '8px 6px 2px'
 
-    
+                }}>
+                    <TextareaAutosize  placeholder={placeholder} onBlur={this.closeForm} 
+                    value= { this.state.text} onChange={this.handleInputChange}
+                    style={{
+                        resize: 'none',
+                        width: '100%',
+                        outline: 'none',
+                        border:'none',
+                        overflow: 'hidden',
+                        padding: '8px 6px 2px'
+                    }}
+                    />
 
-    openForm = () =>{
-        this.setState({
-            formOpen: true
-        })
-    }
-
-    closeForm= (e)=>{
-        this.setState({
-            formOpen: false
-        })
-}
-
-    renderForm=()=> {
-        const {list} = this.props;
-        const placeholder = list? "Enter list title...": "Enter titile for the card";
-        
-        const buttonTitle = list? "Add List": "Add Card";
-        return <div>
-                <Card>
-                    <TextareaAutosize placeholder={placeholder} autoFocus onBlur={this.closeForm} 
-                    ovalue= {this.state.text} onChange={ this.handleInput}
-                    style = {{
-                        resize: "none",
-                        width: "100%",
-                        overflow: "hidden",
-                        outline: "none",
-                        border: "none"
-                    }}/>
+                    
                 </Card>
-                <div style= {styles.formButtonGroup}>
-                <Button variant="contained" style={{color: "white", backgroundColor: "#5aac44"}}>{buttonTitle}{" "}</Button>
-                </div>
-        </div>
+                <div style={styles.formButtonGroup}><Button variant="contained" style={{color: 'white', backgroundColor:"#5aac44"}}>
+                    {buttonText}{""}
+                    </Button><Icon style={{marginLeft:8, cursor:'pointer'}}>close</Icon></div>
+            </div>
+        )
     }
+    renderAddButton= ()=> {
+      const  { list } = this.props
 
+      const buttonText = list ? "Add another list": "Add another card";
+      return(
+          <div  onClick = {this.openForm} style = {styles.openFormButtonGroup}>
+              <Icon>add</Icon>
+               <p>{buttonText}</p>
+          </div>
+      );
+    } 
 
+    
     render() {
-        return this.state.formOpen? this.renderForm: this.renderAddButton();
+        return this.state.formOpen ? this.renderForm(): this.renderAddButton();
     }
-
 }
-    const styles= {
-        openForButtonGroup : {
-            display: "flex",
-            alignItems: "center",
-            cursor :"pointer",
-            borderRadius:3,
-            height: 36,
-            width: 200,
-            paddingLeft: 10
-        },
-        formButtonGroup : {
-            marginTop: 8,
-            display: "flex",
-            alignItems: "center"
-        }
-    }
 
-export default TrelloActionButton;
+export default connect()(TrelloActionButton); 
