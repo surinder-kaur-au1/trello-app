@@ -2,7 +2,8 @@ import { CardTravelSharp } from '@material-ui/icons';
 import React, { Component } from 'react';
 import TrelloActionButton from './TrelloActionButton';
  import TrelloCard from './TrelloCards';
- import { Droppable } from 'react-beautiful-dnd';
+ 
+import { Card } from '@material-ui/core';
 const styles = {
     container: {
         backgroundColor: '#dfe3ef',
@@ -17,9 +18,10 @@ const styles = {
 }
 const TrelloList = ({ title, cards, listID }) =>{
     return (
-        <Droppable droppableId= {String(listID)}>
-            {provided => {
-        <div {...provided.droppableProps} ref={provided.innerRef} style = {styles.container}>
+        
+            
+        <div 
+         style = {styles.container}>
             <h4>{title}</h4>
             {cards.map((card, index) => {
                 return (
@@ -31,10 +33,10 @@ const TrelloList = ({ title, cards, listID }) =>{
                 );
             })}
             < TrelloActionButton listID = {listID} />
-            {provided.placeholder}
+        
         </div>
-            }}
-        </Droppable>
+            
+    
     );
 }
 
