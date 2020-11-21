@@ -5,7 +5,7 @@ import Icon from '@material-ui/core/Icon';
 import TextareaAutosize from 'react-textarea-autosize';
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
-import { addList } from '../actions';
+import { addList, addCard }  from '../actions';
 
 const styles = {
     openFormButtonGroup:{
@@ -25,13 +25,52 @@ const styles = {
 }
 class TrelloActionButton extends Component {
         state ={
-            formOpen : false
+            formOpen : false,
+            text: ""
         };
     openForm =()=>{
             this.setState({
                 formOpen: true
             })
-    }
+        }
+    closeForm = e=>{
+                this.setState({
+                    formOpen: false
+                })
+            }
+
+       handleInputChange = e =>{
+           this.setState({
+               text: e.target.value
+           })
+       } 
+       
+       handleAddList = () =>{
+           const { dispatch } = this.props;
+           const { text } = this.state;
+
+           if(text) {
+               this.setState({
+                   text: ""
+               })
+               dispatch(addList(text))
+           }
+           return;
+       };
+
+       handleCard = () => {
+        const { dispatch, listID } = this.props;
+        const { text } = this.state;
+
+        if(text) {
+            this.setState({
+                text: ""
+            })
+            dispatch(addCard(listID, text));
+       }
+       };
+
+
     renderForm =() => {
         const {list } = this.props
         const placeholder = list ? "Enter the list" : "Enter the title for card"
@@ -44,7 +83,7 @@ class TrelloActionButton extends Component {
                     padding: '8px 6px 2px'
 
                 }}>
-                    <TextareaAutosize  placeholder={placeholder} onBlur={this.closeForm} 
+                   <TextareaAutosize  placeholder={placeholder} onBlur={this.closeForm} 
                     value= { this.state.text} onChange={this.handleInputChange}
                     style={{
                         resize: 'none',
@@ -58,9 +97,12 @@ class TrelloActionButton extends Component {
 
                     
                 </Card>
-                <div style={styles.formButtonGroup}><Button variant="contained" style={{color: 'white', backgroundColor:"#5aac44"}}>
+                <div style={styles.formButtonGroup}>
+                    <Button onMouseDown={ list ? this.handleAddList : this.handleCard} 
+                    variant="contained" style={{color: 'white', backgroundColor:"#5aac44"}}>
                     {buttonText}{""}
-                    </Button><Icon style={{marginLeft:8, cursor:'pointer'}}>close</Icon></div>
+                    </Button>
+                    <Icon style={{marginLeft:8, cursor:'pointer'}}>close</Icon></div>
             </div>
         )
     }
